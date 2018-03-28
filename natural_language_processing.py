@@ -6,42 +6,43 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 # Importing the dataset
-dataset = pd.read_csv('Restaurant_Reviews.tsv', delimiter = '\t', quoting = 3)
+# разделение по табам, так как в сообщениях никогда не встречаются табы
+# и так можно разделить текст сообщения от его эмоционального оттенка
+dataset = pd.read_csv('Restaurant_Reviews.tsv',
+                      delimiter = '\t', # tab separated text
+                      quoting = 3) # ignore "" simboles in messages
 
-# Cleaning the texts
+# Cleaning the texts // dataset['Review'][0] get first review
 import re
 import nltk
-nltk.download('stopwords')
+nltk.download('stopwords') # скачиваем словарь лишних слов
 from nltk.corpus import stopwords
-from nltk.stem.porter import PorterStemmer
-corpus = []
-for i in range(0, 1000):
-    review = re.sub('[^a-zA-Z]', ' ', dataset['Review'][i])
-    review = review.lower()
-    review = review.split()
-    ps = PorterStemmer()
-    review = [ps.stem(word) for word in review if not word in set(stopwords.words('english'))]
-    review = ' '.join(review)
-    corpus.append(review)
+# delet all chars and set ' ' in dataset
+review = re.sub('[^a-zA-Z]', ' ', dataset['Review'][0])
+# to lower letters
+review = review.lower()
+review = review.split() # make list of words ['wow', 'loved', 'this', ...]
+# word проходимся по review и оставляем там только те слова, которые есть
+# в stopwords
+# python работает быстрее с set() чем с list!!!
+# удаляем 'this'
+review = [word for word in review if not word in set(stopwords.words('english'))]
 
-# Creating the Bag of Words model
-from sklearn.feature_extraction.text import CountVectorizer
-cv = CountVectorizer(max_features = 1500)
-X = cv.fit_transform(corpus).toarray()
-y = dataset.iloc[:, 1].values
 
-# Splitting the dataset into the Training set and Test set
-from sklearn.cross_validation import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, random_state = 0)
 
-# Fitting Naive Bayes to the Training set
-from sklearn.naive_bayes import GaussianNB
-classifier = GaussianNB()
-classifier.fit(X_train, y_train)
 
-# Predicting the Test set results
-y_pred = classifier.predict(X_test)
 
-# Making the Confusion Matrix
-from sklearn.metrics import confusion_matrix
-cm = confusion_matrix(y_test, y_pred)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
