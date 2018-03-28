@@ -17,16 +17,32 @@ import re
 import nltk
 nltk.download('stopwords') # скачиваем словарь лишних слов
 from nltk.corpus import stopwords
-# delet all chars and set ' ' in dataset
-review = re.sub('[^a-zA-Z]', ' ', dataset['Review'][0])
-# to lower letters
-review = review.lower()
-review = review.split() # make list of words ['wow', 'loved', 'this', ...]
-# word проходимся по review и оставляем там только те слова, которые есть
-# в stopwords
-# python работает быстрее с set() чем с list!!!
-# удаляем 'this'
-review = [word for word in review if not word in set(stopwords.words('english'))]
+
+corpus = [] # collection of texts
+
+for i in range(0, 1000) :
+  # delet all chars and set ' ' in dataset
+  review = re.sub('[^a-zA-Z]', ' ', dataset['Review'][i])
+  # to lower letters
+  review = review.lower()
+  review = review.split() # make list of words ['wow', 'loved', 'this', ...]
+
+  # word проходимся по review и оставляем там только те слова, которые есть
+  # в stopwords
+  # python работает быстрее с set() чем с list!!!
+  # удаляем 'this'
+
+  # stemming words => loved = love for review (ps.stem(word))
+  from nltk.stem.porter import PorterStemmer
+  ps = PorterStemmer()
+
+  review = [ps.stem(word) for word in review if not word in set(stopwords.words('english'))]
+
+  # join all words in one line and split by ' '
+  review = ' '.join(review)
+  corpus.append(review)
+
+
 
 
 
