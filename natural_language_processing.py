@@ -42,6 +42,12 @@ for i in range(0, 1000) :
   review = ' '.join(review)
   corpus.append(review)
 
+# Creating the Bag of Words model
+from sklearn.feature_extraction.text import CountVectorizer
+# также размер можно уменьшить из 9 раздела dimensionality reduction
+cv = CountVectorizer(max_features = 1500) # max columns of features 1500
+X = cv.fit_transform(corpus).toarray() # fit_transform ???
+y = dataset.iloc[:, 1].values
 
 
 
